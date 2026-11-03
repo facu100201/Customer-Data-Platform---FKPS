@@ -13,6 +13,6 @@
     "zod": "^3.25.76"
   },
   "devDependencies": {
-    "tsup": "^8.5.0"
+    "tsup": "^9.0.0"
   }
 }

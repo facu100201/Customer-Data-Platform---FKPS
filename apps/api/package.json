@@ -26,6 +26,6 @@
   },
   "devDependencies": {
     "prisma": "^6.11.1",
-    "tsup": "^8.5.0"
+    "tsup": "^9.0.0"
   }
 }
