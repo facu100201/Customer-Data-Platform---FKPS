@@ -1,0 +1,96 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  # Electron solo se descarga en release-desktop.yml
+  ELECTRON_SKIP_BINARY_DOWNLOAD: '1'
+
+jobs:
+  quality:
+    name: Lint, tipos, pruebas y build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run format:check
+      - run: npm run typecheck
+      - run: npm run test:coverage
+      - run: npm run build
+      - uses: actions/upload-artifact@v4
+        with:
+          name: coverage
+          path: coverage/
+          retention-days: 7
+
+  e2e:
+    name: E2E (Postgres + 20 terminales)
+    needs: quality
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: cdp
+          POSTGRES_PASSWORD: cdp
+          POSTGRES_DB: cdp
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U cdp"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    # Credenciales desechables, solo existen durante este job
+    env:
+      DATABASE_URL: postgresql://cdp:cdp@127.0.0.1:5432/cdp
+      JWT_SECRET: ci-jwt-secret-0123456789abcdef0123456789abcdef
+      IDENTITY_PEPPER: ci-identity-pepper-0123456789
+      SENTINEL_TOKEN: ci-sentinel-token-0123456789abcdef
+      SEED_USUARIO_EMAIL: usuario@fkps.local
+      SEED_USUARIO_PASSWORD: ci-usuario-pass-123
+      SEED_ADMIN_EMAIL: admin@fkps.local
+      SEED_ADMIN_PASSWORD: ci-admin-pass-123
+      SEED_SUPER_EMAIL: super@fkps.local
+      SEED_SUPER_PASSWORD: ci-super-pass-123
+      SEED_QA_EMAIL: qa@fkps.local
+      SEED_QA_PASSWORD: ci-qa-pass-12345
+      SIM_SOURCE_KEY: ci-sim-source-key-0123456789
+      LOGIN_RATE_LIMIT: '500'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - run: npm run db:migrate
+      - run: npm run db:seed
+      - run: npm run build -w @cdp/api -w @cdp/web
+      - run: npx playwright install --with-deps chromium
+      - run: npm run test:e2e
+      - name: Carga con el simulador (25 terminales, 30 s)
+        run: |
+          npm run start -w @cdp/api &
+          npx --yes wait-on@8 http-get://127.0.0.1:3000/api/health
+          npm run sim -- --url http://127.0.0.1:3000 --terminals 25 --minutes 0.5
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 7

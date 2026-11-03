@@ -1,0 +1,39 @@
+name: Deploy (servidor Apache)
+
+# Corre solo cuando CI pasó en main, o a mano. Nunca en pull_request: el runner es una máquina real
+# de la red ZeroTier y el repositorio es público (ver docs/seguridad.md).
+on:
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'push')
+    runs-on: [self-hosted, windows, cdp-server]
+    environment: production
+    env:
+      ELECTRON_SKIP_BINARY_DOWNLOAD: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+      - run: npm ci
+      - run: npm run build -w @cdp/api -w @cdp/web -w @cdp/sentinel
+      - name: Desplegar
+        shell: powershell
+        run: .\infra\windows\deploy.ps1

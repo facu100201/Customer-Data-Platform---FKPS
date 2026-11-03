@@ -1,0 +1,234 @@
+// Esquema del CDP FKPS. Documentación de cada tabla: docs/base-de-datos.md
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  usuario
+  qa
+  admin
+  superusuario
+}
+
+enum IdentifierType {
+  email
+  phone
+  crm_id
+  device_id
+  cookie_id
+  ip
+}
+
+enum EventCategory {
+  behavior
+  transaction
+  profile
+  operational
+}
+
+enum MergeStatus {
+  auto
+  pending
+  approved
+  rejected
+}
+
+enum ActivationDestination {
+  email_mock
+  ads_mock
+  web_personalization
+  webhook
+}
+
+enum Severity {
+  low
+  medium
+  high
+  critical
+}
+
+model AppUser {
+  id           String     @id @default(uuid()) @db.Uuid
+  email        String     @unique
+  passwordHash String     @map("password_hash")
+  role         Role
+  active       Boolean    @default(true)
+  lastLogin    DateTime?  @map("last_login")
+  createdAt    DateTime   @default(now()) @map("created_at")
+  auditLogs    AuditLog[]
+  segments     Segment[]
+
+  @@map("app_users")
+}
+
+model Customer {
+  id          String           @id @default(uuid()) @db.Uuid
+  traits      Json             @default("{}")
+  aggregates  Json             @default("{}")
+  clv         Decimal?         @db.Decimal(12, 2)
+  churnScore  Decimal?         @map("churn_score") @db.Decimal(4, 3)
+  synthetic   Boolean          @default(false)
+  firstSeen   DateTime         @default(now()) @map("first_seen")
+  lastSeen    DateTime         @default(now()) @map("last_seen")
+  updatedAt   DateTime         @updatedAt @map("updated_at")
+  identities  Identity[]
+  events      Event[]
+  memberships SegmentMembership[]
+
+  @@index([lastSeen])
+  @@map("customers")
+}
+
+model Identity {
+  id          String         @id @default(uuid()) @db.Uuid
+  customerId  String         @map("customer_id") @db.Uuid
+  type        IdentifierType
+  /// HMAC-SHA256 del valor normalizado, con IDENTITY_PEPPER
+  valueHash   String         @map("value_hash")
+  valueMasked String         @map("value_masked")
+  confidence  Decimal        @default(1) @db.Decimal(4, 3)
+  source      String?
+  firstSeen   DateTime       @default(now()) @map("first_seen")
+  customer    Customer       @relation(fields: [customerId], references: [id], onDelete: Cascade)
+
+  @@unique([type, valueHash])
+  @@index([customerId])
+  @@map("identities")
+}
+
+model Event {
+  id          BigInt        @id @default(autoincrement())
+  eventId     String?       @unique @map("event_id") @db.Uuid
+  category    EventCategory
+  name        String
+  anonymousId String        @map("anonymous_id")
+  customerId  String?       @map("customer_id") @db.Uuid
+  sourceId    String?       @map("source_id") @db.Uuid
+  terminalId  String?       @map("terminal_id")
+  occurredAt  DateTime      @map("occurred_at")
+  receivedAt  DateTime      @default(now()) @map("received_at")
+  payload     Json          @default("{}")
+  customer    Customer?     @relation(fields: [customerId], references: [id], onDelete: SetNull)
+  source      Source?       @relation(fields: [sourceId], references: [id])
+
+  @@index([customerId, occurredAt])
+  @@index([occurredAt])
+  @@index([anonymousId])
+  @@map("events")
+}
+
+model IdentityMerge {
+  id        String      @id @default(uuid()) @db.Uuid
+  winnerId  String      @map("winner_id") @db.Uuid
+  loserId   String      @map("loser_id") @db.Uuid
+  rule      String
+  score     Decimal     @db.Decimal(4, 3)
+  reasons   Json        @default("[]")
+  status    MergeStatus
+  decidedBy String?     @map("decided_by") @db.Uuid
+  createdAt DateTime    @default(now()) @map("created_at")
+  decidedAt DateTime?   @map("decided_at")
+
+  @@index([status])
+  @@map("identity_merges")
+}
+
+model Source {
+  id         String   @id @default(uuid()) @db.Uuid
+  name       String   @unique
+  kind       String
+  apiKeyHash String   @unique @map("api_key_hash")
+  active     Boolean  @default(true)
+  createdAt  DateTime @default(now()) @map("created_at")
+  events     Event[]
+
+  @@map("sources")
+}
+
+model Segment {
+  id          String              @id @default(uuid()) @db.Uuid
+  name        String              @unique
+  description String?
+  definition  Json
+  dynamic     Boolean             @default(true)
+  createdById String?             @map("created_by") @db.Uuid
+  createdBy   AppUser?            @relation(fields: [createdById], references: [id])
+  createdAt   DateTime            @default(now()) @map("created_at")
+  refreshedAt DateTime?           @map("refreshed_at")
+  memberships SegmentMembership[]
+  activations Activation[]
+
+  @@map("segments")
+}
+
+model SegmentMembership {
+  segmentId  String   @map("segment_id") @db.Uuid
+  customerId String   @map("customer_id") @db.Uuid
+  enteredAt  DateTime @default(now()) @map("entered_at")
+  segment    Segment  @relation(fields: [segmentId], references: [id], onDelete: Cascade)
+  customer   Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+
+  @@id([segmentId, customerId])
+  @@map("segment_memberships")
+}
+
+model Activation {
+  id          String                @id @default(uuid()) @db.Uuid
+  segmentId   String                @map("segment_id") @db.Uuid
+  destination ActivationDestination
+  config      Json                  @default("{}")
+  status      String                @default("idle")
+  lastRun     DateTime?             @map("last_run")
+  lastResult  Json?                 @map("last_result")
+  segment     Segment               @relation(fields: [segmentId], references: [id], onDelete: Cascade)
+
+  @@map("activations")
+}
+
+model Terminal {
+  id            String   @id
+  label         String?
+  ztIp          String?  @map("zt_ip")
+  userAgent     String?  @map("user_agent")
+  lastHeartbeat DateTime @default(now()) @map("last_heartbeat")
+  createdAt     DateTime @default(now()) @map("created_at")
+
+  @@map("terminals")
+}
+
+model AuditLog {
+  id       BigInt   @id @default(autoincrement())
+  actorId  String?  @map("actor_id") @db.Uuid
+  action   String
+  entity   String?
+  entityId String?  @map("entity_id")
+  ip       String?
+  at       DateTime @default(now())
+  meta     Json     @default("{}")
+  actor    AppUser? @relation(fields: [actorId], references: [id])
+
+  @@index([at])
+  @@index([action, at])
+  @@map("audit_log")
+}
+
+model SecurityAlert {
+  id             String   @id @default(uuid()) @db.Uuid
+  source         String
+  severity       Severity
+  category       String
+  summary        String
+  excerpt        String
+  model          String
+  acknowledgedBy String?  @map("acknowledged_by") @db.Uuid
+  createdAt      DateTime @default(now()) @map("created_at")
+
+  @@index([createdAt])
+  @@map("security_alerts")
+}

@@ -1,0 +1,14 @@
+{
+  "name": "@cdp/sim-terminals",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Simula N dumb terminals generando journeys de clientes contra el CDP",
+  "scripts": {
+    "start": "tsx src/index.ts",
+    "typecheck": "tsc -p tsconfig.json"
+  },
+  "dependencies": {
+    "@cdp/shared": "0.1.0"
+  }
+}

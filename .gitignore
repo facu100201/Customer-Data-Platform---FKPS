@@ -1,0 +1,17 @@
+node_modules/
+dist/
+release/
+coverage/
+playwright-report/
+test-results/
+*.log
+.env
+.env.*
+!.env.example
+.DS_Store
+Thumbs.db
+
+# Obsidian: solo se versiona la configuración compartida
+docs/.obsidian/workspace*.json
+docs/.obsidian/cache
+docs/.trash/
