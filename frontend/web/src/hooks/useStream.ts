@@ -5,7 +5,10 @@ type Handlers = Partial<Record<'event' | 'terminal' | 'alert' | 'merge', (data: 
 /** Se suscribe al canal SSE /api/stream. EventSource reconecta solo si se cae la red. */
 export function useStream(handlers: Handlers) {
   const ref = useRef(handlers);
-  ref.current = handlers;
+  // Se actualiza después de cada render (no durante): los mensajes SSE siempre llegan después
+  useEffect(() => {
+    ref.current = handlers;
+  });
 
   useEffect(() => {
     const source = new EventSource('/api/stream', { withCredentials: true });
