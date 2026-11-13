@@ -5,7 +5,14 @@ updates:
     schedule:
       interval: weekly
     open-pull-requests-limit: 5
+    # Un paquete entra al primer grupo que coincida: los grupos acoplados van antes que dev-tooling
     groups:
+      # @vitest/* exige la misma versión exacta de vitest: si suben por separado, npm ci falla
+      vitest:
+        patterns: ['vitest', '@vitest/*']
+      # Los tipos de React deben seguir a la versión de React que corre
+      react:
+        patterns: ['react', 'react-dom', '@types/react', '@types/react-dom']
       dev-tooling:
         dependency-type: development
         update-types: [minor, patch]
@@ -17,6 +24,14 @@ updates:
       - dependency-name: prisma
         update-types: ['version-update:semver-major']
       - dependency-name: '@prisma/client'
+        update-types: ['version-update:semver-major']
+      # El runtime es Node 22 (.nvmrc): tipos de una versión mayor aceptarían APIs que no existen en producción
+      - dependency-name: '@types/node'
+        update-types: ['version-update:semver-major']
+      # ESLint 10 no es compatible todavía con eslint-plugin-react-hooks 5
+      - dependency-name: eslint
+        update-types: ['version-update:semver-major']
+      - dependency-name: '@eslint/js'
         update-types: ['version-update:semver-major']
   - package-ecosystem: github-actions
     directory: /
