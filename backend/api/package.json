@@ -15,7 +15,7 @@
     "@cdp/shared": "0.1.0",
     "@fastify/cookie": "^11.0.2",
     "@fastify/jwt": "^10.2.7",
-    "@fastify/rate-limit": "^10.3.0",
+    "@fastify/rate-limit": "^11.2.2",
     "@node-rs/argon2": "^2.0.2",
     "@prisma/client": "^6.11.1",
     "fastify": "^5.4.0",
