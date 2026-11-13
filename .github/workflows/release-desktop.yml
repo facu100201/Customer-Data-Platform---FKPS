@@ -22,8 +22,8 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: cdp-terminal-windows
-          path: apps/desktop/release/*.exe
+          path: frontend/desktop/release/*.exe
       - uses: softprops/action-gh-release@v2
         if: startsWith(github.ref, 'refs/tags/')
         with:
-          files: apps/desktop/release/*.exe
+          files: frontend/desktop/release/*.exe

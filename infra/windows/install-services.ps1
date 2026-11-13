@@ -16,8 +16,8 @@ $node = (Get-Command node -ErrorAction Stop).Source
 New-Item -ItemType Directory -Force $LogDir | Out-Null
 
 $services = @(
-  @{ Name = 'CDP-API'; Dir = "$AppDir\apps\api"; Script = 'dist\index.js' },
-  @{ Name = 'CDP-Sentinel'; Dir = "$AppDir\apps\sentinel"; Script = 'dist\index.js' }
+  @{ Name = 'CDP-API'; Dir = "$AppDir\backend\api"; Script = 'dist\index.js' },
+  @{ Name = 'CDP-Sentinel'; Dir = "$AppDir\backend\sentinel"; Script = 'dist\index.js' }
 )
 
 foreach ($s in $services) {

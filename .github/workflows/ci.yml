@@ -55,12 +55,10 @@ jobs:
           --health-interval 5s
           --health-timeout 5s
           --health-retries 10
-    # Credenciales desechables, solo existen durante este job
+    # Credenciales desechables, solo existen durante este job. Las llaves y secretos se generan
+    # al vuelo en el primer paso para que ningún valor con forma de secreto quede en el repositorio.
     env:
       DATABASE_URL: postgresql://cdp:cdp@127.0.0.1:5432/cdp
-      JWT_SECRET: ci-jwt-secret-0123456789abcdef0123456789abcdef
-      IDENTITY_PEPPER: ci-identity-pepper-0123456789
-      SENTINEL_TOKEN: ci-sentinel-token-0123456789abcdef
       SEED_USUARIO_EMAIL: usuario@fkps.local
       SEED_USUARIO_PASSWORD: ci-usuario-pass-123
       SEED_ADMIN_EMAIL: admin@fkps.local
@@ -69,9 +67,15 @@ jobs:
       SEED_SUPER_PASSWORD: ci-super-pass-123
       SEED_QA_EMAIL: qa@fkps.local
       SEED_QA_PASSWORD: ci-qa-pass-12345
-      SIM_SOURCE_KEY: ci-sim-source-key-0123456789
       LOGIN_RATE_LIMIT: '500'
     steps:
+      - name: Genera secretos desechables
+        run: |
+          for name in JWT_SECRET IDENTITY_PEPPER SENTINEL_TOKEN SIM_SOURCE_KEY; do
+            value="$(openssl rand -hex 32)"
+            echo "::add-mask::$value"
+            echo "$name=$value" >> "$GITHUB_ENV"
+          done
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:

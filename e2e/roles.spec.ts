@@ -21,8 +21,11 @@ for (const role of Object.keys(expectedNav) as SeedRole[]) {
   test(`navegación del rol ${role}`, async ({ page }) => {
     await login(page, role);
     const nav = page.getByRole('navigation');
-    for (const label of expectedNav[role].visible) await expect(nav.getByRole('link', { name: label })).toBeVisible();
-    for (const label of expectedNav[role].hidden) await expect(nav.getByRole('link', { name: label })).toHaveCount(0);
+    // exact: sin él, "Terminal" también coincide con el enlace "Terminales"
+    for (const label of expectedNav[role].visible)
+      await expect(nav.getByRole('link', { name: label, exact: true })).toBeVisible();
+    for (const label of expectedNav[role].hidden)
+      await expect(nav.getByRole('link', { name: label, exact: true })).toHaveCount(0);
   });
 }
 

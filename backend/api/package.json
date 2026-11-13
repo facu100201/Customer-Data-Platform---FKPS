@@ -1,0 +1,27 @@
+{
+  "name": "@cdp/api",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch --env-file-if-exists=.env src/index.ts",
+    "build": "tsup",
+    "start": "node --env-file-if-exists=.env dist/index.js",
+    "typecheck": "tsc -p tsconfig.json"
+  },
+  "dependencies": {
+    "@cdp/db": "0.1.0",
+    "@cdp/engine": "0.1.0",
+    "@cdp/shared": "0.1.0",
+    "@fastify/cookie": "^11.0.2",
+    "@fastify/jwt": "^10.2.7",
+    "@fastify/rate-limit": "^10.3.0",
+    "@node-rs/argon2": "^2.0.2",
+    "@prisma/client": "^6.11.1",
+    "fastify": "^5.4.0",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "tsup": "^8.5.0"
+  }
+}

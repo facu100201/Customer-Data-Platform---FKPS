@@ -36,24 +36,26 @@ foreach ($svc in 'CDP-Sentinel', 'CDP-API') {
 
 Step "Copiando aplicación a $AppDir"
 Invoke-Robocopy $RepoDir $AppDir @('/XD', '.git', 'release', 'coverage', 'playwright-report', 'test-results')
-Copy-Item "$ConfigDir\api.env" "$AppDir\apps\api\.env" -Force
-Copy-Item "$ConfigDir\sentinel.env" "$AppDir\apps\sentinel\.env" -Force
+Copy-Item "$ConfigDir\api.env" "$AppDir\backend\api\.env" -Force
+Copy-Item "$ConfigDir\sentinel.env" "$AppDir\backend\sentinel\.env" -Force
+# El seed corre desde db\ con las mismas variables que la API (rol cdp_app)
+Copy-Item "$ConfigDir\api.env" "$AppDir\db\.env" -Force
 
 Step 'Migraciones de base de datos'
-Push-Location "$AppDir\apps\api"
+Push-Location "$AppDir\db"
 try {
   $env:DATABASE_URL = (Get-Content "$ConfigDir\migrator.url" -Raw).Trim()
   npx prisma migrate deploy
   if ($LASTEXITCODE -ne 0) { throw 'prisma migrate deploy falló' }
   Remove-Item Env:\DATABASE_URL
-  npm run db:seed
+  npm run seed
   if ($LASTEXITCODE -ne 0) { throw 'seed falló' }
 } finally {
   Pop-Location
 }
 
 Step 'Publicando frontend en Apache'
-Invoke-Robocopy "$RepoDir\apps\web\dist" "$ApacheDir\htdocs\cdp" @()
+Invoke-Robocopy "$RepoDir\frontend\web\dist" "$ApacheDir\htdocs\cdp" @()
 
 Step 'Configuración de Apache'
 $confTarget = "$ApacheDir\conf\extra\cdp.conf"
