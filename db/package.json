@@ -1,0 +1,22 @@
+{
+  "name": "@cdp/db",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Esquema, migraciones y datos iniciales de PostgreSQL del CDP FKPS",
+  "scripts": {
+    "postinstall": "prisma generate",
+    "generate": "prisma generate",
+    "migrate": "prisma migrate deploy",
+    "migrate:dev": "prisma migrate dev",
+    "seed": "tsx --env-file-if-exists=.env seed.ts",
+    "typecheck": "tsc -p tsconfig.json"
+  },
+  "dependencies": {
+    "@node-rs/argon2": "^2.0.2",
+    "@prisma/client": "^6.11.1"
+  },
+  "devDependencies": {
+    "prisma": "^6.11.1"
+  }
+}

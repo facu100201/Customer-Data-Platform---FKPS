@@ -1,0 +1,4 @@
+# Falsos positivos revisados a mano. Formato: <commit>:<archivo>:<regla>:<línea>
+# JWT_SECRET desechable del job E2E (solo vivía dentro del runner de CI). Ya no está en ci.yml:
+# ahora los secretos de CI se generan con openssl en cada ejecución.
+74d0559007b8e16a6e88f5b737a2ade157f8af57:.github/workflows/ci.yml:generic-api-key:61
