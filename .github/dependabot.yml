@@ -13,6 +13,9 @@ updates:
       # Los tipos de React deben seguir a la versión de React que corre
       react:
         patterns: ['react', 'react-dom', '@types/react', '@types/react-dom']
+      # Los plugins de Vite fijan su versión mayor de vite (p. ej. @vitejs/plugin-react 6 exige Vite 8)
+      vite:
+        patterns: ['vite', '@vitejs/*', '@tailwindcss/vite']
       dev-tooling:
         dependency-type: development
         update-types: [minor, patch]
