@@ -8,5 +8,7 @@
 6beeeb6dd726529d971e978f166ca767c7af8dbc:.env.example:generic-api-key:25
 6beeeb6dd726529d971e978f166ca767c7af8dbc:setup.sh:generic-api-key:121
 6beeeb6dd726529d971e978f166ca767c7af8dbc:setup.sh:generic-api-key:124
-# "key: 'churn.tickets30d'" es el nombre de un parámetro del simulador, no un secreto.
+# scenario.ts:233 es el nombre de un parámetro del simulador (churn.tickets30d), no un secreto.
 64a016d803a1fd524224d1c25dc4212f3a1ec122:frontend/web/src/services/scenario.ts:generic-api-key:233
+# El comentario anterior citaba esa misma línea en 63168d7 y volvió a disparar la regla.
+63168d77ea8499fdf6d70517993d49c398570e03:.gitleaksignore:generic-api-key:11
