@@ -35,6 +35,8 @@ export const ERROR_TEXT: Record<string, string> = {
   no_autenticado: 'Tu sesión expiró. Vuelve a entrar.',
   sin_permiso: 'Tu rol no tiene permiso para esta acción.',
   validacion: 'Revisa los datos del formulario.',
+  nombre_duplicado: 'Ya existe un segmento con ese nombre.',
+  no_encontrado: 'El registro ya no existe; recarga la página.',
 };
 
 export const errorText = (err: unknown) =>

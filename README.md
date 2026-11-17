@@ -368,7 +368,7 @@ Todas las rutas cuelgan de `/api`.
 | `GET /stats/overview` · `GET /stream` | `dashboard:read` · sesión | Dashboard y SSE en vivo |
 | `GET /customers` · `GET /customers/:id` | `customers:read` | Lista paginada y perfil 360 |
 | `GET /merges` · `POST /merges/:id/approve\|reject` | `merges:review` | Revisión de identidades |
-| `GET/POST/DELETE /segments` · `POST /segments/:id/refresh` · `GET /segments/:id/members` | `segments:*` | Segmentos |
+| `GET/POST/DELETE /segments` · `PATCH /segments/:id` · `POST /segments/preview` · `POST /segments/:id/refresh` · `GET /segments/:id/members` | `segments:*` | Segmentos |
 | `GET/POST /activations` · `POST /activations/:id/run` | `activations:write` | Activaciones |
 | `GET /personalize/:anonymousId` | público en ZeroTier | Banner para el visitante |
 | `GET/POST /security/alerts` · `POST /security/alerts/:id/ack` · `GET /security/signals` | `security:*` o token del Sentinel | Seguridad |
