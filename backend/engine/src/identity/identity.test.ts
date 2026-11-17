@@ -5,11 +5,11 @@ import { scoreMatch, type ProfileSignals } from './probabilistic';
 
 describe('normalización', () => {
   it('unifica variantes de Gmail', () => {
-    expect(normalizeEmail(' Ana.Lopez+promo@GMAIL.com ')).toBe('analopez@gmail.com');
+    expect(normalizeEmail(' Cliente.Prueba+promo@GMAIL.com ')).toBe('clienteprueba@gmail.com');
   });
 
   it('respeta los puntos fuera de Gmail', () => {
-    expect(normalizeEmail('ana.lopez@usb.edu.mx')).toBe('ana.lopez@usb.edu.mx');
+    expect(normalizeEmail('ana.lopez@example.com')).toBe('ana.lopez@example.com');
   });
 
   it('lleva teléfonos de 10 dígitos a E.164 con +52', () => {
@@ -18,7 +18,7 @@ describe('normalización', () => {
   });
 
   it('enmascara PII', () => {
-    expect(maskIdentifier('email', 'analopez@gmail.com')).toBe('an***@gmail.com');
+    expect(maskIdentifier('email', 'clienteprueba@gmail.com')).toBe('cl***@gmail.com');
     expect(maskIdentifier('phone', '+525512345678')).toBe('+52******5678');
   });
 });
@@ -31,11 +31,11 @@ describe('resolución determinista', () => {
         id: 'laptop',
         identifiers: [
           { type: 'cookie_id', value: 'c-1' },
-          { type: 'email', value: 'Ana@Correo.com' },
+          { type: 'email', value: 'Ana@Example.com' },
         ],
       },
-      { id: 'soporte', identifiers: [{ type: 'email', value: 'ana@correo.com' }] },
-      { id: 'otra', identifiers: [{ type: 'email', value: 'luis@correo.com' }] },
+      { id: 'soporte', identifiers: [{ type: 'email', value: 'ana@example.com' }] },
+      { id: 'otra', identifiers: [{ type: 'email', value: 'luis@example.com' }] },
     ]);
     const sorted = groups.map((g) => g.sort()).sort((a, b) => b.length - a.length);
     expect(sorted).toEqual([['laptop', 'movil', 'soporte'], ['otra']]);

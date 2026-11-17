@@ -36,11 +36,23 @@ export const CHURN_COEFFICIENTS = {
   cartAbandoned30d: 0.2,
 } as const;
 
+/** Probabilidad de churn desde la que un cliente se considera en riesgo (en rojo en Clientes 360). */
+export const CHURN_RISK_THRESHOLD = 0.7;
+
+/** Mismos campos que CHURN_COEFFICIENTS, con valores libres (p. ej. escenarios del simulador). */
+export type ChurnCoefficients = { [K in keyof typeof CHURN_COEFFICIENTS]: number };
+
 const sigmoid = (z: number) => 1 / (1 + Math.exp(-z));
 
-/** Probabilidad 0–1 de abandono basada en recencia, frecuencia y fricción. */
-export function computeChurn(agg: ProfileAggregates): number {
-  const c = CHURN_COEFFICIENTS;
+/**
+ * Probabilidad 0–1 de abandono basada en recencia, frecuencia y fricción.
+ * Sin `coefficients` usa CHURN_COEFFICIENTS, que es lo que guarda la API en cada perfil.
+ */
+export function computeChurn(
+  agg: ProfileAggregates,
+  coefficients: ChurnCoefficients = CHURN_COEFFICIENTS,
+): number {
+  const c = coefficients;
   const recency = Math.min(agg.days_since_last_event ?? 90, 180);
   const z =
     c.intercept +

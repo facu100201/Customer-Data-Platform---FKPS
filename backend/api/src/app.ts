@@ -10,6 +10,7 @@ import { customerRoutes } from './routes/customers';
 import { eventRoutes } from './routes/events';
 import { opsRoutes } from './routes/ops';
 import { segmentRoutes } from './routes/segments';
+import { simulatorRoutes } from './routes/simulator';
 import { SseHub } from './services/sse';
 
 declare module 'fastify' {
@@ -61,6 +62,7 @@ export async function buildApp(deps: {
       await api.register(customerRoutes);
       await api.register(segmentRoutes);
       await api.register(adminRoutes);
+      await api.register(simulatorRoutes);
     },
     { prefix: '/api' },
   );

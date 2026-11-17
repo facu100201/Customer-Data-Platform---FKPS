@@ -1,3 +1,4 @@
+import { CHURN_RISK_THRESHOLD } from '@cdp/engine';
 import { useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { PageTitle } from '../components/Guard';
@@ -24,7 +25,7 @@ const money = (v: string | number | null) =>
   v === null ? '–' : Number(v).toLocaleString('es-MX', { style: 'currency', currency: 'MXN' });
 
 const churnColor = (v: number) =>
-  v >= 0.7 ? 'text-red-600' : v >= 0.4 ? 'text-amber-600' : 'text-emerald-600';
+  v >= CHURN_RISK_THRESHOLD ? 'text-red-600' : v >= 0.4 ? 'text-amber-600' : 'text-emerald-600';
 
 export function Customers() {
   const [page, setPage] = useState(1);

@@ -20,8 +20,8 @@ function redactTraits(req: FastifyRequest, traits: unknown) {
   return copy;
 }
 
-/** QA trabaja solo sobre perfiles sintéticos (simulador y pruebas). */
-const scope = (req: FastifyRequest): Prisma.CustomerWhereInput =>
+/** QA trabaja solo sobre perfiles sintéticos (simulador y pruebas). También lo usa routes/simulator.ts. */
+export const scope = (req: FastifyRequest): Prisma.CustomerWhereInput =>
   req.user.role === 'qa' ? { synthetic: true } : {};
 
 export async function customerRoutes(app: FastifyInstance) {
