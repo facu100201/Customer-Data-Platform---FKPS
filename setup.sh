@@ -116,10 +116,12 @@ APP_PASSWORD=$(rand 16)
 JWT_SECRET=$(rand 32)
 IDENTITY_PEPPER=$(rand 24)
 SIM_SOURCE_KEY=sim_$(rand 16)
-SEED_USUARIO_PASSWORD=usuario-$(rand 6)
-SEED_ADMIN_PASSWORD=admin-$(rand 6)
-SEED_SUPER_PASSWORD=super-$(rand 6)
-SEED_QA_PASSWORD=qa-$(rand 6)
+# Usuarios de PRUEBA con contraseñas fijas y públicas (ver docs/credenciales-prueba.md).
+# Solo para desarrollo y sandbox; en el servidor real se usan otras y se rotan.
+SEED_USUARIO_PASSWORD=Prueba-Usuario-2026
+SEED_ADMIN_PASSWORD=Prueba-Admin-2026
+SEED_SUPER_PASSWORD=Prueba-Super-2026
+SEED_QA_PASSWORD=Prueba-QA-2026
 EOF
   )
 fi
@@ -305,7 +307,8 @@ Contraseñas locales: $CREDENTIALS
   cd $REPO && npm run sim -- --terminals 10 --minutes 1   # datos sintéticos (con la API arriba)
   cd $REPO && npm run typecheck && npm test
 
-Usuarios: usuario@fkps.local, qa@fkps.local, admin@fkps.local, super@fkps.local
+Usuarios de prueba (contraseñas en docs/credenciales-prueba.md):
+  usuario@fkps.local · qa@fkps.local · admin@fkps.local · super@fkps.local
 $(if [ "$REUSED_SERVER" = false ]; then
   echo "Para detener PostgreSQL: $( [ "$(/usr/bin/id -u)" -eq 0 ] && echo "/usr/sbin/runuser -u $PG_OS_USER -- ")$PG_BIN/pg_ctl -D $PG_DATA stop"
 fi)

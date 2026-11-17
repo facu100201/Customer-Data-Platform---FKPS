@@ -427,7 +427,9 @@ npm run dev:web    # http://127.0.0.1:5173
 ```
 
 Entra con cualquiera de los cuatro usuarios definidos en `SEED_*_EMAIL` / `SEED_*_PASSWORD`. Las
-contraseñas deben tener al menos 12 caracteres.
+contraseñas deben tener al menos 12 caracteres. Para desarrollo y pruebas hay usuarios de prueba con
+contraseñas públicas en [docs/credenciales-prueba.md](docs/credenciales-prueba.md); en el servidor real
+usa otras.
 
 ### Generar tráfico
 

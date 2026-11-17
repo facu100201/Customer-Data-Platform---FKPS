@@ -1,19 +1,23 @@
 import { expect, type Page } from '@playwright/test';
 
+// Por defecto, los usuarios de prueba de docs/credenciales-prueba.md (los mismos que deja setup.sh).
 export const users = {
   usuario: {
     email: process.env.SEED_USUARIO_EMAIL ?? 'usuario@fkps.local',
-    password: process.env.SEED_USUARIO_PASSWORD ?? '',
+    password: process.env.SEED_USUARIO_PASSWORD ?? 'Prueba-Usuario-2026',
   },
   admin: {
     email: process.env.SEED_ADMIN_EMAIL ?? 'admin@fkps.local',
-    password: process.env.SEED_ADMIN_PASSWORD ?? '',
+    password: process.env.SEED_ADMIN_PASSWORD ?? 'Prueba-Admin-2026',
   },
   superusuario: {
     email: process.env.SEED_SUPER_EMAIL ?? 'super@fkps.local',
-    password: process.env.SEED_SUPER_PASSWORD ?? '',
+    password: process.env.SEED_SUPER_PASSWORD ?? 'Prueba-Super-2026',
   },
-  qa: { email: process.env.SEED_QA_EMAIL ?? 'qa@fkps.local', password: process.env.SEED_QA_PASSWORD ?? '' },
+  qa: {
+    email: process.env.SEED_QA_EMAIL ?? 'qa@fkps.local',
+    password: process.env.SEED_QA_PASSWORD ?? 'Prueba-QA-2026',
+  },
 };
 
 export type SeedRole = keyof typeof users;
