@@ -1,9 +1,10 @@
+import { PrismaPg } from '@prisma/adapter-pg';
 import { PrismaClient } from '@prisma/client';
 import { buildApp } from './app';
 import { loadConfig } from './config';
 
 const cfg = loadConfig();
-const prisma = new PrismaClient();
+const prisma = new PrismaClient({ adapter: new PrismaPg({ connectionString: cfg.DATABASE_URL }) });
 const app = await buildApp({ cfg, prisma, logger: true });
 
 const shutdown = async (signal: string) => {

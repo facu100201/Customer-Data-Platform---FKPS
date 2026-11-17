@@ -9,7 +9,7 @@ describe('normalización', () => {
   });
 
   it('respeta los puntos fuera de Gmail', () => {
-    expect(normalizeEmail('ana.lopez@usb.edu.mx')).toBe('ana.lopez@usb.edu.mx');
+    expect(normalizeEmail('ana.lopez@example.com')).toBe('ana.lopez@example.com');
   });
 
   it('lleva teléfonos de 10 dígitos a E.164 con +52', () => {

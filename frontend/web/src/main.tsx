@@ -10,6 +10,7 @@ import { Dashboard } from './pages/Dashboard';
 import { Login } from './pages/Login';
 import { Identities, QaAudit, Security, Terminals } from './pages/Operations';
 import { Segments } from './pages/Segments';
+import { Simulator } from './pages/Simulator';
 import { Terminal } from './pages/Terminal';
 import './styles/index.css';
 
@@ -79,6 +80,14 @@ createRoot(document.getElementById('root')!).render(
               element={
                 <Guard perm="segments:read">
                   <Activations />
+                </Guard>
+              }
+            />
+            <Route
+              path="simulador"
+              element={
+                <Guard perm="simulator:run">
+                  <Simulator />
                 </Guard>
               }
             />

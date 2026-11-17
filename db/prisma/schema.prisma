@@ -1,7 +1,9 @@
 // Esquema del CDP FKPS. Las migraciones viven en db/prisma/migrations (npm run db:migrate).
 
 generator client {
-  provider = "prisma-client-js"
+  provider   = "prisma-client-js"
+  // Sin motor nativo de Rust: las consultas van por @prisma/adapter-pg (ver backend/api/src/index.ts)
+  engineType = "client"
 }
 
 datasource db {

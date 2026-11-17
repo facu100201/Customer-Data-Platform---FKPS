@@ -3,7 +3,14 @@ import Dexie, { type EntityTable } from 'dexie';
 import { api, ApiError } from './api';
 
 type QueuedEvent = { id?: number; event: CdpEventInput; queuedAt: number };
-type SavedScenario = { id?: number; name: string; createdAt: number; params: Record<string, unknown> };
+/** Escenario del simulador (ver services/scenarioStore.ts). ownerId no está indexado: no cambia el esquema. */
+export type SavedScenario = {
+  id?: number;
+  name: string;
+  createdAt: number;
+  params: Record<string, unknown>;
+  ownerId: string;
+};
 
 /**
  * IndexedDB local de la terminal. Solo guarda lo que aún no llega al servidor (cola offline) y los

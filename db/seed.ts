@@ -4,6 +4,7 @@
  */
 import { createHash } from 'node:crypto';
 import { hash } from '@node-rs/argon2';
+import { PrismaPg } from '@prisma/adapter-pg';
 import { PrismaClient, type Role } from '@prisma/client';
 
 /** Debe coincidir con hashApiKey de backend/api/src/lib/crypto.ts (SHA-256 en hex). */
@@ -15,7 +16,7 @@ try {
   // variables ya en el entorno
 }
 
-const prisma = new PrismaClient();
+const prisma = new PrismaClient({ adapter: new PrismaPg({ connectionString: process.env.DATABASE_URL }) });
 
 const USERS: { role: Role; emailVar: string; passwordVar: string }[] = [
   { role: 'usuario', emailVar: 'SEED_USUARIO_EMAIL', passwordVar: 'SEED_USUARIO_PASSWORD' },

@@ -11,10 +11,19 @@ test('rechaza credenciales incorrectas', async ({ page }) => {
 
 // Cada rol ve solo las secciones que su permiso permite
 const expectedNav: Record<SeedRole, { visible: string[]; hidden: string[] }> = {
-  usuario: { visible: ['Terminal', 'Clientes 360'], hidden: ['Seguridad', 'Identidades', 'QA y auditoría'] },
-  qa: { visible: ['Clientes 360', 'QA y auditoría'], hidden: ['Terminal', 'Seguridad', 'Identidades'] },
-  admin: { visible: ['Identidades', 'Seguridad', 'QA y auditoría'], hidden: [] },
-  superusuario: { visible: ['Terminal', 'Identidades', 'Seguridad', 'QA y auditoría'], hidden: [] },
+  usuario: {
+    visible: ['Terminal', 'Clientes 360'],
+    hidden: ['Seguridad', 'Identidades', 'QA y auditoría', 'Simulador'],
+  },
+  qa: {
+    visible: ['Clientes 360', 'QA y auditoría', 'Simulador'],
+    hidden: ['Terminal', 'Seguridad', 'Identidades'],
+  },
+  admin: { visible: ['Identidades', 'Seguridad', 'QA y auditoría', 'Simulador'], hidden: [] },
+  superusuario: {
+    visible: ['Terminal', 'Identidades', 'Seguridad', 'QA y auditoría', 'Simulador'],
+    hidden: [],
+  },
 };
 
 for (const role of Object.keys(expectedNav) as SeedRole[]) {
@@ -33,4 +42,11 @@ test('el rol usuario no puede abrir seguridad aunque escriba la URL', async ({ p
   await login(page, 'usuario');
   await page.goto('/seguridad');
   await expect(page.getByText('Tu rol no tiene acceso a esta sección.')).toBeVisible();
+});
+
+test('el rol usuario no puede abrir el simulador aunque escriba la URL', async ({ page }) => {
+  await login(page, 'usuario');
+  await page.goto('/simulador');
+  await expect(page.getByText('Tu rol no tiene acceso a esta sección.')).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Simulador de escenarios' })).toHaveCount(0);
 });

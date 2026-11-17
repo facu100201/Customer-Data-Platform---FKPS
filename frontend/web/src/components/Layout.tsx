@@ -9,6 +9,7 @@ const NAV: { to: string; label: string; perm: Permission }[] = [
   { to: '/identidades', label: 'Identidades', perm: 'merges:review' },
   { to: '/segmentos', label: 'Segmentos', perm: 'segments:read' },
   { to: '/activaciones', label: 'Activaciones', perm: 'segments:read' },
+  { to: '/simulador', label: 'Simulador', perm: 'simulator:run' },
   { to: '/terminales', label: 'Terminales', perm: 'terminals:read' },
   { to: '/seguridad', label: 'Seguridad', perm: 'security:read' },
   { to: '/qa', label: 'QA y auditoría', perm: 'audit:read' },

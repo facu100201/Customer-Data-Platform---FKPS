@@ -142,6 +142,30 @@ Solo lo sospechoso se envía a **Ollama** (`llama3.2:3b`, en `127.0.0.1`) para q
 escriba un resumen en español. Si Ollama está apagado, la alerta se guarda igual con la severidad de las
 reglas. Los logs nunca salen del servidor.
 
+### 3.6 Simulador de escenarios
+
+La pantalla **Simulador** permite probar "¿qué pasaría si…?" con los modelos de CLV y churn
+([§5.2](#52-valor-del-ciclo-de-vida-clv) y [§5.3](#53-probabilidad-de-abandono-churn)) sin tocar los datos.
+Solo aparece para roles con el permiso `simulator:run` (QA, admin y superusuario), y QA trabaja solo con
+perfiles sintéticos. Los cálculos se hacen en el navegador con las mismas funciones del motor que usa la API,
+sobre los agregados de cada perfil (sin datos personales).
+
+1. **Mueve los controles**: vida del cliente y margen (CLV), los seis coeficientes de churn y el umbral de
+   riesgo (70 % por defecto, el mismo con el que *Clientes 360* marca el churn en rojo).
+2. **Compara contra los valores por defecto**: clientes en riesgo (cuántos siguen, entran y salen), CLV total,
+   CLV en riesgo y la distribución de CLV. Los rangos de la gráfica salen de los quintiles del CLV por
+   defecto y no cambian al mover los controles.
+3. **Guarda el escenario** con un nombre. Se guarda en IndexedDB, solo en ese navegador y solo para tu
+   usuario, y contiene únicamente los valores de los controles. Guardar con un nombre que ya existe lo
+   reemplaza. Desde la lista se puede **cargar** o **eliminar**.
+4. **Compara dos escenarios** guardados, o uno contra los valores por defecto, en *Comparar escenarios*:
+   métricas de A y B, diferencia B − A, quién entra o sale del riesgo y qué parámetros cambian.
+5. **Restablecer valores** regresa todos los controles a los valores por defecto. **Actualizar datos** trae
+   solo los perfiles nuevos o recalculados desde la última carga.
+
+Para tener perfiles con los que probar, genera tráfico con la API arriba:
+`npm run sim -- --terminals 10 --minutes 1` (ver [§11](#11-puesta-en-marcha)).
+
 ## 4. Arquitectura
 
 ```mermaid
@@ -281,6 +305,7 @@ usan esa misma tabla.
 | Ver alertas de seguridad | | | ✓ | ✓ |
 | Atender alertas de seguridad | | | | ✓ |
 | Ver la auditoría | | ✓ | ✓ | ✓ |
+| Usar el simulador de escenarios | | ✓ | ✓ | ✓ |
 | Administrar cuentas "usuario" | | | ✓ | ✓ |
 | Cambiar roles | | | | ✓ |
 
@@ -348,6 +373,7 @@ Todas las rutas cuelgan de `/api`.
 | `GET /personalize/:anonymousId` | público en ZeroTier | Banner para el visitante |
 | `GET/POST /security/alerts` · `POST /security/alerts/:id/ack` · `GET /security/signals` | `security:*` o token del Sentinel | Seguridad |
 | `GET /audit` · `GET /users` · `PATCH /users/:id` | `audit:read` · `users:manage` | Administración |
+| `GET /simulator/customers` | `simulator:run` | Agregados de CLV y churn por perfil para el simulador, paginados por cursor (QA: solo sintéticos) |
 
 ## 10. Estructura del repositorio
 
