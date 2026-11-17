@@ -2,3 +2,11 @@
 # JWT_SECRET desechable del job E2E (solo vivía dentro del runner de CI). Ya no está en ci.yml:
 # ahora los secretos de CI se generan con openssl en cada ejecución.
 74d0559007b8e16a6e88f5b737a2ade157f8af57:.github/workflows/ci.yml:generic-api-key:61
+# Contraseñas de PRUEBA públicas a propósito (docs/credenciales-prueba.md): solo desarrollo y sandbox,
+# se rotan en el servidor real.
+6beeeb6dd726529d971e978f166ca767c7af8dbc:.env.example:generic-api-key:19
+6beeeb6dd726529d971e978f166ca767c7af8dbc:.env.example:generic-api-key:25
+6beeeb6dd726529d971e978f166ca767c7af8dbc:setup.sh:generic-api-key:121
+6beeeb6dd726529d971e978f166ca767c7af8dbc:setup.sh:generic-api-key:124
+# "key: 'churn.tickets30d'" es el nombre de un parámetro del simulador, no un secreto.
+64a016d803a1fd524224d1c25dc4212f3a1ec122:frontend/web/src/services/scenario.ts:generic-api-key:233
