@@ -101,15 +101,6 @@ Debes proponer una arquitectura final con todo lo anterior discutido, base de da
 
 **Equipo:** FKPS
 
-**Integrantes:**
-
-1. Pamela Ruíz Velasco - Matrícula: 240186
-
-2. Ana Karen López Jiménez - Matrícula: 240187
-
-3. Fernando Acuña Martínez - Matrícula: 240191
-
-4. Frida Sofía Escamilla Olguín - Matrícula: 240165
 
 ## PARTE 1. VERIFICACIÓN DE REQUISITOS (15 puntos)
 
