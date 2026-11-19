@@ -10,8 +10,8 @@
     "dist": "electron-builder --win --publish never"
   },
   "devDependencies": {
-    "electron": "^45.3.1",
-    "electron-builder": "^26.0.12"
+    "electron": "^45.3.2",
+    "electron-builder": "^26.18.0"
   },
   "build": {
     "appId": "mx.edu.usb.fkps.cdp",
