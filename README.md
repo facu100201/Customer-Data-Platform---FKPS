@@ -5,7 +5,7 @@
 ![Node](https://img.shields.io/badge/node-22-339933)
 ![TypeScript](https://img.shields.io/badge/typescript-5.8-3178c6)
 
-Plataforma de datos de clientes (CDP) construida por el equipo FKPS. Recibe eventos de muchas terminales
+Plataforma de datos de clientes (CDP) que diseñé y desarrollé como proyecto personal. Recibe eventos de muchas terminales
 conectadas por una red privada ZeroTier, une los fragmentos de cada persona en un perfil único, calcula su
 valor y su riesgo de abandono, la agrupa en segmentos y decide qué mensaje o banner debe recibir.
 Todo corre en un servidor Windows con Apache 2.4, PostgreSQL y un modelo de IA local para vigilar la
@@ -30,7 +30,7 @@ seguridad.
 13. [CI/CD y despliegue](#13-cicd-y-despliegue)
 14. [Decisiones de arquitectura](#14-decisiones-de-arquitectura)
 15. [Estado actual y limitaciones](#15-estado-actual-y-limitaciones)
-16. [Equipo y forma de trabajo](#16-equipo-y-forma-de-trabajo)
+16. [Autor y forma de trabajo](#16-autor-y-forma-de-trabajo)
 
 ---
 
@@ -497,10 +497,9 @@ segmentos, activaciones simuladas, personalización web, dashboard en vivo, Sent
 - La sesión no se revoca al desactivar un usuario ni al cambiarle el rol, sino hasta que expira (8 h).
 - Todavía no hay pantallas para administrar usuarios ni para cambiar la contraseña.
 
-## 16. Equipo y forma de trabajo
+## 16. Autor y forma de trabajo
 
-**Equipo FKPS:** Pamela Ruíz Velasco, Ana Karen López Jiménez, Fernando Acuña Martínez y Frida Sofía
-Escamilla Olguín.
+**Autor:** Fernando Acuña Martínez ([@facu100201](https://github.com/facu100201)).
 
 Cada cambio entra por pull request con la [plantilla](.github/PULL_REQUEST_TEMPLATE.md). Esta es la
 secuencia:
